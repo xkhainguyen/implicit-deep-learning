@@ -128,4 +128,3 @@ class ImplicitModelLoRA(nn.Module):
 
         X = self.f.apply(L_projected @ RT_projected, self.B, X0, U)
         return transpose(self.C @ X + self.D @ U)
-    
