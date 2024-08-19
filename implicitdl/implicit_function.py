@@ -103,30 +103,36 @@ class ImplicitFunctionInf(ImplicitFunction):
         # project A on |A|_inf=v
         v = 0.95
 
-        A_np = A.clone().detach().cpu().numpy()
-        x = np.abs(A_np).sum(axis=-1)
-        for idx in np.where(x > v)[0]:
-            # read the vector
-            a_orig = A_np[idx, :]
-            a_sign = np.sign(a_orig)
-            a_abs = np.abs(a_orig)
-            a = np.sort(a_abs)
+        norm_inf_A = torch.linalg.matrix_norm(A, ord=float('inf')) 
+        if (norm_inf_A > v):
+            A = v*A/norm_inf_A
+        else:
+            pass
 
-            s = np.sum(a) - v
-            l = float(len(a))
-            for i in range(len(a)):
-                if s / l > a[i]:
-                    s -= a[i]
-                    l -= 1
-                else:
-                    break
-            alpha = s / l
-            a = a_sign * np.maximum(a_abs - alpha, 0)
-            # verify
-            assert np.isclose(np.abs(a).sum(), v)
-            # write back
-            A_np[idx, :] = a
+        # A_np = A.clone().detach().cpu().numpy()
+        # x = np.abs(A_np).sum(axis=-1)
+        # for idx in np.where(x > v)[0]:
+        #     # read the vector
+        #     a_orig = A_np[idx, :]
+        #     a_sign = np.sign(a_orig)
+        #     a_abs = np.abs(a_orig)
+        #     a = np.sort(a_abs)
 
-        A.data.copy_(torch.tensor(A_np, dtype=A.dtype, device=A.device))
+        #     s = np.sum(a) - v
+        #     l = float(len(a))
+        #     for i in range(len(a)):
+        #         if s / l > a[i]:
+        #             s -= a[i]
+        #             l -= 1
+        #         else:
+        #             break
+        #     alpha = s / l
+        #     a = a_sign * np.maximum(a_abs - alpha, 0)
+        #     # verify
+        #     assert np.isclose(np.abs(a).sum(), v)
+        #     # write back
+        #     A_np[idx, :] = a
+
+        # A.data.copy_(torch.tensor(A_np, dtype=A.dtype, device=A.device))
 
         return super(ImplicitFunctionInf, cls).forward(ctx, A, B, X0, U)
