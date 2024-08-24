@@ -43,6 +43,8 @@ class ImplicitModel(nn.Module):
         self.bias = bias
 
     def forward(self, U: torch.Tensor, X0: Optional[torch.Tensor] = None):
+        if (len(U.size()) == 3):
+            U = U.flatten(1, -1)
         U = transpose(U)
         if self.bias:
             U = F.pad(U, (0, 0, 0, 1), value=1)
@@ -109,6 +111,8 @@ class ImplicitModelLoRA(nn.Module):
         return A
 
     def forward(self, U: torch.Tensor, X0: Optional[torch.Tensor] = None):
+        if (len(U.size()) == 3):
+            U = U.flatten(1, -1)
         U = transpose(U)
         if self.bias:
             U = F.pad(U, (0, 0, 0, 1), value=1)
