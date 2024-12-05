@@ -7,8 +7,8 @@ class ImplicitFunctionWarning(RuntimeWarning):
     pass
 
 class ImplicitFunction(Function):
-    mitr = grad_mitr = 300
-    tol = grad_tol = 3e-6
+    mitr = grad_mitr = 500
+    tol = grad_tol = 1e-6
 
     @classmethod
     def forward(cls, ctx, A, B, X0, U):
