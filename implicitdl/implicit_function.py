@@ -101,7 +101,7 @@ class ImplicitFunctionInf(ImplicitFunction):
     def forward(cls, ctx, A, B, X0, U):
 
         # project A on |A|_inf=v
-        v = 0.95
+        v = 0.99
 
         norm_inf_A = torch.linalg.matrix_norm(A, ord=float('inf')) 
         if (norm_inf_A > v):
